@@ -59,6 +59,17 @@ express()
       res.status(200).json({ status: 200, message });
     }, randomTime);
   })
+
+  .get("/bot-message", (req, res) => {
+    const message = {
+      author: "bot",
+      text: `Bzzt ${req.query.text}`,
+    };
+    const randomTime = Math.floor(Math.random() * 3000);
+    setTimeout(() => {
+      res.status(200).json({ status: 200, message });
+    }, randomTime);
+  })
   // add new endpoints here ☝️
   // ---------------------------------
   // Nothing to modify below this line
