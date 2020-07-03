@@ -4,6 +4,8 @@
 const express = require("express");
 const morgan = require("morgan");
 
+let jokeMode = false;
+
 express()
   // Below are methods that are included in express(). We chain them for convenience.
   // --------------------------------------------------------------------------------
@@ -65,33 +67,40 @@ express()
       const commonGreetings = ["hi", "hello", "howdy"];
       const commonGoodbyes = ["goodbye", "later", "bye"];
       let botMsg = `${req.query.text}`;
+      if (jokeMode === false) {
+        commonGreetings.forEach((greeting) => {
+          if (text.toLowerCase().includes(greeting)) {
+            botMsg = "Hello!";
+          }
+        });
 
-      commonGreetings.forEach((greeting) => {
-        if (text.toLowerCase().includes(greeting)) {
-          botMsg = "Hello!";
+        commonGoodbyes.forEach((goodbye) => {
+          if (text.toLowerCase().includes(goodbye)) {
+            botMsg = "Goodbye!";
+          }
+        });
+
+        if (text.toLowerCase().includes("something funny")) {
+          botMsg = "Would you like to hear a joke ? Answer 'Yes' or 'No'";
+          jokeMode = true;
         }
-      });
+      }
+      const jokes = [
+        "Why did the chicken commit suicide? To get to the other side.",
+        "Q: What’s the difference between England and a tea bag? A: The tea bag stays in the cup longer.",
+        "A dyslexic man walks into a bra.",
+      ];
 
-      commonGoodbyes.forEach((goodbye) => {
-        if (text.toLowerCase().includes(goodbye)) {
+      if (jokeMode === true) {
+        if (text.toLowerCase().includes("yes")) {
+          botMsg = `${jokes[Math.floor(Math.random() * 3)]}`;
+          jokeMode = false;
+        }
+        if (text.toLowerCase().includes("no")) {
           botMsg = "Goodbye!";
+          jokeMode = false;
         }
-      });
-      // const jokes = [
-      //   "Why did the chicken commit suicide? To get to the other side.",
-      //   "Q: What’s the difference between England and a tea bag? A: The tea bag stays in the cup longer.",
-      //   "A dyslexic man walks into a bra.",
-      // ];
-      // if (text.toLowerCase().includes("something funny")) {
-      //   botMsg = "Would you like to hear a joke ? Answer 'Yes' or 'No'";
-      //   jokeMode = true;
-      // }
-      // if (jokeMode === true) {
-      //   if (text.toLowerCase().includes("yes")) {
-      //     botMsg = `${jokes[1]}`;
-      //   }
-      // }
-      // return console.log(jokeMode);
+      }
       return botMsg;
     };
 
